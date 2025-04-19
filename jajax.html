@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>AJAX - Webprog1</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/ajax.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Web-programozás-1 Előadás Házi feladat</h1>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="index.html">Kezdőlap</a></li>
+      <li><a href="table.html">Táblázat</a></li>
+      <li><a href="html5.html">HTML5</a></li>
+      <li><a href="chart.html">ChartJS</a></li>
+      <li><a href="ajax.html" class="active">AJAX</a></li>
+      <li><a href="oojs.html">OOJS</a></li>
+      <li><a href="react.html">React</a></li>
+    </ul>
+  </nav>
+
+  <aside>
+    <p>Adatok betöltése és kezelése AJAX segítségével.</p>
+  </aside>
+
+  <div id="content">
+    <h2>AJAX Adatkezelés</h2>
+
+    <div id="form-section">
+      <input type="text" id="idField" placeholder="ID (módosításhoz)">
+      <button id="getDataForId">Adatok betöltése ID alapján</button><br>
+
+      <input type="text" id="name" placeholder="Név">
+      <input type="text" id="height" placeholder="Magasság">
+      <input type="text" id="weight" placeholder="Súly">
+
+      <button id="createBtn">Létrehozás</button>
+      <button id="updateBtn">Módosítás</button>
+      <button id="deleteBtn">Törlés</button>
+    </div>
+
+    <div id="dataDisplay"></div>
+    <div id="statsDisplay"></div>
+    <div id="messageDisplay"></div>
+  </div>
+
+  <footer>
+    <p>Készítette: Balogh Róbert (SSDPW9) és Petrik Tibor (GDAZA8)</p>
+  </footer>
+</body>
+</html>
