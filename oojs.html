@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>OOJS - Webprog1</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/oojs.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Web-programozás-1 Előadás Házi feladat</h1>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="index.html">Kezdőlap</a></li>
+      <li><a href="table.html">Táblázat</a></li>
+      <li><a href="html5.html">HTML5</a></li>
+      <li><a href="chart.html">ChartJS</a></li>
+      <li><a href="ajax.html">AJAX</a></li>
+      <li><a href="oojs.html" class="active">OOJS</a></li>
+      <li><a href="react.html">React</a></li>
+    </ul>
+  </nav>
+
+  <aside>
+    <p>Objektumorientált JavaScript használatával készült felület.</p>
+  </aside>
+
+  <div id="content">
+    <h2>Objektumorientált JavaScript</h2>
+
+    <div id="form-section">
+      <input type="text" id="idField" placeholder="ID (módosításhoz)">
+      <button id="getDataForId">Adatok betöltése ID alapján</button><br>
+
+      <input type="text" id="name" placeholder="Név">
+      <input type="text" id="height" placeholder="Magasság">
+      <input type="text" id="weight" placeholder="Súly">
+
+      <button id="createBtn">Létrehozás</button>
+      <button id="updateBtn">Módosítás</button>
+      <button id="deleteBtn">Törlés</button>
+    </div>
+
+    <div id="dataDisplay"></div>
+    <div id="messageDisplay"></div>
+  </div>
+
+  <footer>
+    <p>Készítette: Balogh Róbert (SSDPW9) és Petrik Tibor (GDAZA8)</p>
+  </footer>
+
+  <script>
+    class Person {
+      constructor(id, name, height, weight) {
+        this.id = id;
+        this.name = name;
+        this.height = height;
+        this.weight = weight;
+      }
+
+      displayData() {
+        return ${this.id} - ${this.name}, ${this.height} cm, ${this.weight} kg;
+      }
+    }
+
+    const code = "SSDPW9xyz123";
+    const apiUrl = "http://gamf.nhely.hu/ajax2/";
+
+    const nameInput = document.getElementById("name");
+    const heightInput = document.getElementById("height");
+    const weightInput = document.getElementById("weight");
+    const idInput = document.getElementById("idField");
+    const dataDisplay = document.getElementById("dataDisplay");
+    const messageDisplay = document.getElementById("messageDisplay");
+
+    function validateInputs() {
+      const name = nameInput.value.trim();
+      const height = heightInput.value.trim();
+      const weight = weightInput.value.trim();
+      if (!name || !height || !weight) {
+        showMessage("Minden mező kitöltése kötelező.", true);
+        return false;
+      }
+      if (name.length > 30 || height.length > 30 || weight.length > 30) {
+        showMessage("A mezők max. 30 karakter hosszúak lehetnek.", true);
+        return false;
+      }
+      return true;
+    }
+
+    function showMessage(msg, isError = false) {
+      messageDisplay.textContent = msg;
+      messageDisplay.style.color = isError ? "red" : "green";
+    }
+
+    function fetchData() {
+      fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ op: "read", code })
+      })
+        .then(res => res.json())
+        .then(data => {
+          dataDisplay.innerHTML = "";
+          if (data.list && data.list.length > 0) {
+            data.list.forEach(row => {
+              const person = new Person(row.id, row.name, row.height, row.weight);
+              const div = document.createElement("div");
+              div.textContent = person.displayData();
+              dataDisplay.appendChild(div);
+            });
+          }
+        });
+    }
+
+    document.getElementById("createBtn").addEventListener("click", () => {
+      if (!validateInputs()) return;
+      const data = {
+        op: "create",
+        code,
+        name: nameInput.value,
+        height: heightInput.value,
+        weight: weightInput.value
+      };
+      fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(data)
+      })
+        .then(res => res.text())
+        .then(res => {
+          showMessage("Sikeres létrehozás.");
+          fetchData();
+        });
+    });
+
+    document.getElementById("updateBtn").addEventListener("click", () => {
+      if (!validateInputs()) return;
+      const id = idInput.value.trim();
+      if (!id) return showMessage("Adja meg a módosítandó ID-t.", true);
+      const data = {
+        op: "update",
+        code,
+        id,
+        name: nameInput.value,
+        height: heightInput.value,
+        weight: weightInput.value
+      };
+      fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(data)
+      })
+        .then(res => res.text())
+        .then(res => {
+          showMessage("Sikeres módosítás.");
+          fetchData();
+        });
+    });
+
+    document.getElementById("deleteBtn").addEventListener("click", () => {
+      const id = idInput.value.trim();
+      if (!id) return showMessage("Adja meg a törlendő ID-t.", true);
+      const data = {
+        op: "delete",
+        code,
+        id
+      };
+      fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(data)
+      })
+        .then(res => res.text())
+        .then(res => {
+          showMessage("Sikeres törlés.");
+          fetchData();
+        });
+    });
+
+    document.getElementById("getDataForId").addEventListener("click", () => {
+      const id = idInput.value.trim();
+      if (!id) return showMessage("Adja meg az ID-t.", true);
+      fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ op: "read", code })
+      })
+        .then(res => res.json())
+        .then(data => {
+          const found = data.list.find(row => row.id === id);
+          if (!found) {
+            showMessage("Nem található adat az ID alapján.", true);
+          } else {
+            nameInput.value = found.name;
+            heightInput.value = found.height;
+            weightInput.value = found.weight;
+            showMessage("Adatok betöltve.");
+          }
+        });
+    });
+
+    fetchData();
+  </script>
+</body>
+</html>
