@@ -1,0 +1,47 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  header, footer {
+    background: #222;
+    color: white;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #444;
+  }
+  
+  nav li {
+    flex: 1;
+  }
+  
+  nav a {
+    display: block;
+    padding: 10px;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+  }
+  
+  nav a:hover,
+  nav a.active {
+    background: #666;
+  }
+  
+  aside {
+    background: #eee;
+    padding: 10px;
+  }
+  
+  #content {
+    padding: 20px;
+  }
+  
